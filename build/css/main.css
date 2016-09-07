@@ -1,9 +1,10 @@
 body {
+  background-color: #008000;
   margin: 0;
 }
 .wrapper {
   height: 2000px;
-  width: 50px;
+  width: 100%;
   background-color: #f00;
 }
 .footer {
