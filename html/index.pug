@@ -1,0 +1,20 @@
+- var title = "test"
+- var mainStyle = "main.css"
+doctype html
+
+html
+  head
+    title My Site - #{title}
+    link(href= mainStyle , rel='stylesheet')
+
+
+  body
+    h1 Start of index file
+
+    block content
+      p Welcome - Index content
+
+    p DIVIDER
+
+    div.footer
+      p footer cotent
