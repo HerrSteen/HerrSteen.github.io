@@ -7,22 +7,34 @@ var pugLinter = require("gulp-pug-linter");
 var gutil = require("gulp-util");
 var browserSync = require('browser-sync').create();
 
+var src = {
+    stylus: 'html/stylus/main.styl',
+    css:  'build/css/',
+    pug: 'html/*.pug',
+    html: 'build/',
+    scripts: 'html/js/*.js',
+    destScripts: 'build/js/'
+};
 
-var baseDir = "html/";
+gulp.task("scripts", function () {
+  return gulp.src(src.scripts)
+    .pipe(gulp.dest(src.destScripts))
 
-gulp.task("css", function () {
-  return gulp.src(baseDir + "*.styl")
+});
+
+gulp.task("stylus", function () {
+  return gulp.src(src.stylus)
     .pipe(stylus())
     .on("error", onError)
-    .pipe(gulp.dest("build"));
+    .pipe(gulp.dest(src.css));
 });
 
 gulp.task("pug", function () {
-  return gulp.src(baseDir + "*.pug")
+  return gulp.src(src.pug)
   .pipe(pugLinter())
   .pipe(pug({ }))
   .on("error", onError)
-  .pipe(gulp.dest("build"));
+  .pipe(gulp.dest(src.html));
 });
 
 function onError(err) {
@@ -30,7 +42,7 @@ function onError(err) {
   this.emit("end");
 }
 
-gulp.task("watch", function () {
+gulp.task("browser-sync", function () {
 
   browserSync.init({
       server: {
@@ -38,8 +50,17 @@ gulp.task("watch", function () {
       }
   });
 
-  gulp.watch(baseDir + "*.pug", ["pug"]).on("change", browserSync.reload);
-  gulp.watch(baseDir + "*.styl", ["css"]).on("change", browserSync.reload);
+  gulp.watch(src.html + "*.html").on("change", browserSync.reload);
+  gulp.watch(src.css + "*.css").on("change", browserSync.reload);
+  gulp.watch(src.destScripts + "*.js").on("change", browserSync.reload);
+
 });
 
-gulp.task("default", ["watch", "pug", "css"]);
+gulp.task("watch", function () {
+
+  gulp.watch(src.pug, ["pug"]);
+  gulp.watch(src.stylus, ["stylus"]);
+  gulp.watch(src.scripts, ["scripts"]);
+});
+
+gulp.task("default", ["browser-sync", "pug", "stylus", "scripts", "watch"]);
